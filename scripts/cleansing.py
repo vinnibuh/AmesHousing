@@ -2,6 +2,8 @@ from collections import defaultdict
 
 def data_cleaning(df, drop_pid=True, lower_precision=True, drop_rare_values=True):
     
+    df = df.drop(2261)
+    
     if drop_pid:
         df = df.drop('PID', axis=1)
         
