@@ -100,7 +100,7 @@ def convert_features(df: pd.DataFrame) -> pd.DataFrame:
 
     for col, value in df[ORDERED_FEATURES].iteritems():
         df[col] = value.map(ranking[col])
-
+        df[col] = df[col].fillna(df.loc[train_idx, col].mean())
     for col in CAT_FEATURES_DICT.keys():
         df[col] = df[col].apply(lambda x: CAT_FEATURES_DICT[col].get(x, x))
 
@@ -113,20 +113,19 @@ def convert_features(df: pd.DataFrame) -> pd.DataFrame:
                   'Mas Vnr Type', 'Lot Shape', 'Land Slope'], axis=1)
 
     for idx, col in enumerate(DISORDERED_FEATS):
-        print(col)
         freqs = df.loc[train_idx, col].value_counts(normalize=True)
-        print(freqs)
         mapping = df[col].map(freqs)
         df[col] = df[col].mask(mapping < 0.01, 'Other')
 
     df = pd.get_dummies(df, columns=DISORDERED_FEATS, prefix=PREFIXES)
 
     pca = PCA(n_components=4)
-    X_train = df.loc[df['SalePrice'].notna(), PCA_FEATS].values
+    X_train = df.loc[train_idx, PCA_FEATS].values
     X = df[PCA_FEATS].values
     pca.fit(X_train)
-    X_reduced = pca.fit_transform(X)
+    X_reduced = pca.transform(X)
     X_frame = pd.DataFrame(X_reduced, columns=['comp_1', 'comp_2', 'comp_3', 'comp_4'])
-    df = pd.concat([df.reset_index().iloc[:, 1:], X_frame], axis=1). \
+    X_frame.index = df.index
+    df = pd.concat([df.iloc[:, 1:], X_frame], axis=1). \
         drop(PCA_FEATS, axis=1)
     return df

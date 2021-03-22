@@ -8,7 +8,6 @@ def data_cleaning(df, drop_pid=True, lower_precision=True, drop_rare_values=True
         df = df.drop('PID', axis=1)
 
     df['MS SubClass'] = df['MS SubClass'].astype('object')
-    print(df['MS SubClass'].dtype)
 
     # filter outliers
     cols_to_filter = ['SalePrice', 'Garage Area', 'Total Bsmt SF',
