@@ -85,7 +85,16 @@ PCA_FEATS = ['Overall Qual', 'Exter Qual', 'Kitchen Qual',
 
 
 class HousingTransformer(BaseEstimator, TransformerMixin):
+    """A custom Transformer to process data. Includes ranking categorical features, making dummies and PCA."""
+
     def __init__(self, n_pca_components=4, pca_cols=None):
+        """
+        Initialise HousingTransformer. Takes as parameters number of PCA components to leave and subset
+        of columns on which PCA will be fit.
+
+        :param n_pca_components: number of PCA components
+        :param pca_cols: subset of columns, list
+        """
         if pca_cols is None:
             self.pca_cols = PCA_FEATS
         else:
@@ -132,6 +141,13 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         return df.values
 
     def get_dummies(self, df):
+        """
+        Create dummies in dataframe based on already determined columns. Pays attention to possibility of
+        difference in unique values between data which was used to fit transformer and data that we try to transform.
+
+        :param df: source dataframe
+        :return: dataframe, same length
+        """
         dummies_base = pd.get_dummies(self.dummies_base_df, columns=DISORDERED_FEATS, prefix=PREFIXES)
         joint_dummy_df = pd.concat([df, self.dummies_base_df])[DISORDERED_FEATS]
         df_dummies = pd.get_dummies(joint_dummy_df, columns=DISORDERED_FEATS, prefix=PREFIXES).iloc[:df.shape[0], :]
@@ -141,6 +157,12 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
 
 
 def make_binary_features(df):
+    """
+    Create binary features in dataframe
+
+    :param df: source dataframe
+    :return: dataframe, same length
+    """
     df = df.copy()
     df['is_remodeled'] = (df['Year Built'] == df['Year Remod/Add']).astype('int32')
     df['bsmt_cond_dmy'] = (df['Bsmt Cond'].isin(['missing', 'Po', 'Fa'])).astype('int32')
@@ -157,6 +179,14 @@ def make_binary_features(df):
 
 
 def transform_pca(df, pca, cols):
+    """
+    Apply PCA on subset of columns in dataframe. PCA should be already fitted.
+
+    :param df: source dataframe
+    :param pca: instance of PCA from sklearn, already fitted
+    :param cols: subset of columns in form of list
+    :return: dataframe, same length
+    """
     X = df[cols].values
     X_reduced = pca.transform(X)
     X_frame = pd.DataFrame(X_reduced, columns=['comp_' + str(idx) for idx in range(pca.n_components)])
@@ -167,6 +197,13 @@ def transform_pca(df, pca, cols):
 
 
 def basic_feature_engineering(df):
+    """
+    Conduct basic feature engineering, which can be made on whole dataset without fear of data leak.
+    Involves creating binary features, dropping columns and mapping several categories' values.
+
+    :param df: dataframe to preprocess
+    :return: dataframe, same length
+    """
     df = make_binary_features(df)
     for col in CAT_FEATURES_DICT.keys():
         df[col] = df[col].apply(lambda x: CAT_FEATURES_DICT[col].get(x, x))

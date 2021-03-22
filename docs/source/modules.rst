@@ -1,7 +1,7 @@
-scripts
-=======
+housinglib
+==========
 
 .. toctree::
    :maxdepth: 4
 
-   statemachine
+   housinglib

@@ -9,8 +9,9 @@ Welcome to ivchenkov.yap's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   
+   housinglib
 
-   statemachine
 
 Indices and tables
 ==================
