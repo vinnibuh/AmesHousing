@@ -7,6 +7,14 @@ from housinglib.eda import basic_feature_engineering
 
 
 def split_dataset(file_path='../data/AmesHousing.txt', output_directory='../data'):
+    """
+    Read raw dataset, preprocess (to some extent), split it on train/test and store in `csv` files.
+    Names of subsets: `train.csv` and `test.csv`
+
+    :param file_path: path to dataset file with extension `.txt`
+    :param output_directory: path to folder, where data should be stored.
+    :return:
+    """
     raw = pd.read_table(file_path, index_col=0)
     df = data_cleaning(raw)
     df = basic_feature_engineering(df)

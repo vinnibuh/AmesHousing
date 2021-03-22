@@ -7,12 +7,21 @@ COLS_TO_FILTER = [
 ]
 
 
-def data_cleaning(df, drop_pid=True, lower_precision=True, drop_rare_values=True, csv_out=None):
+def data_cleaning(df, lower_precision=True, drop_rare_values=True, csv_out=None):
+    """
+    Conduct primary data cleaning. Includes dropping error entries, filtering outliers, changing precision,
+    and dropping features with too many NaNs. Resets index of dataframe. Converts type of all categorical
+    values to `string`.
+
+    :param df: raw dataset from AmesHousing
+    :param lower_precision: if True, drop precision
+    :param drop_rare_values: if True, drop features with rare values
+    :param csv_out: if present, store in this path processed data
+    :return: dataframe
+    """
     initial_data_size = df.shape[0]
     df = df.drop(2261)
-
-    if drop_pid:
-        df = df.drop('PID', axis=1)
+    df = df.drop('PID', axis=1)
 
     df['MS SubClass'] = df['MS SubClass'].astype('object')
 
@@ -50,6 +59,13 @@ def data_cleaning(df, drop_pid=True, lower_precision=True, drop_rare_values=True
 
 
 def fill_na_real(real_df):
+    """
+    Slightly less straightforward impleentation of filling NaN values. Fills features with small number of unique
+    values with median, others with mean.
+
+    :param real_df: dataframe
+    :return: dataframe, same_shape
+    """
     val_counts_float_cols = real_df.nunique()
 
     few_unique_vals = val_counts_float_cols[val_counts_float_cols <= 10].index
@@ -61,6 +77,14 @@ def fill_na_real(real_df):
 
 
 def drop_precision(df, new_float_type='float32', new_int_type='int32'):
+    """
+    Drop precision quality in order to speed up learning.
+
+    :param df: dataframe
+    :param new_float_type: string, float type
+    :param new_int_type: string, int type
+    :return: dataframe, same shape
+    """
     df = df.copy()
 
     float_cols = df.select_dtypes(include='float64').columns
