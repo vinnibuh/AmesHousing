@@ -10,7 +10,7 @@ from housinglib.eda import HousingTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from housinglib.utils import split_dataset
-import joblib
+import dill
 import warnings
 warnings.filterwarnings('ignore')
 random_state = 17
@@ -37,12 +37,13 @@ def main():
                         transform__n_pca_components=args.n_components)
     regr.fit(X_train, y_train)
 
-    filename = args.model_name + '.pickle'
+    filename = args.model_name + '.pk'
     out_path = path.join(args.output_dir, filename)
+    print(out_path)
     if args.disable_grid_search:
-        joblib.dump(regr.best_estimator_, out_path)
+        dill.dump(regr.best_estimator_, open(out_path, 'wb'))
     else:
-        joblib.dump(regr, out_path)
+        dill.dump(regr, open(out_path, 'wb'))
     print('Saved model at ', out_path)
 
 
