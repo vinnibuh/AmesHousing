@@ -1,5 +1,6 @@
 from collections import defaultdict
 import pandas as pd
+import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -66,18 +67,18 @@ DISORDERED_FEATS = [
 ]
 
 PREFIXES = {
-    'Bldg Type': 'bldg_type',
-    'Condition 1': 'condition',
-    'Exterior 1st': 'exterior',
-    'Foundation': 'foundation',
-    'Garage Type': 'garage_type',
-    'House Style': 'house_style',
-    'Land Contour': 'land_contour',
-    'Lot Config': 'lot_config',
-    'MS SubClass': 'ms_subclass',
-    'MS Zoning': 'ms_zoning',
-    'Neighborhood': 'neighbourhood',
-    'Roof Style': 'roof_style'
+    'Bldg Type': 'dmy_bldg_type',
+    'Condition 1': 'dmy_condition',
+    'Exterior 1st': 'dmy_exterior',
+    'Foundation': 'dmy_foundation',
+    'Garage Type': 'dmy_garage_type',
+    'House Style': 'dmy_house_style',
+    'Land Contour': 'dmy_land_contour',
+    'Lot Config': 'dmy_lot_config',
+    'MS SubClass': 'dmy_ms_subclass',
+    'MS Zoning': 'dmy_ms_zoning',
+    'Neighborhood': 'dmy_neighbourhood',
+    'Roof Style': 'dmy_roof_style'
 }
 
 PCA_FEATS = ['Overall Qual', 'Exter Qual', 'Kitchen Qual',
@@ -103,7 +104,7 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         self.freqs = dict()
         self.means = dict()
         self.pca = PCA(n_components=n_pca_components)
-        self.dummies_base_df = pd.DataFrame()
+        self.base_dummy_cols = []
         self.n_pca_components = n_pca_components
 
     def fit(self, df: pd.DataFrame, y: pd.DataFrame):
@@ -118,9 +119,11 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
             freqs = df[col].value_counts(normalize=True).to_dict()
             mapping = df[col].map(freqs)
             df[col] = df[col].mask(mapping < 0.01, 'Other')
-            self.freqs[col] = defaultdict(lambda: 0, freqs)
 
-        self.dummies_base_df = df[DISORDERED_FEATS]
+            self.freqs[col] = defaultdict(default_freq, freqs)
+
+        df = pd.get_dummies(df, columns=DISORDERED_FEATS, prefix=PREFIXES)
+        self.base_dummy_cols = df.filter(regex='dmy_+', axis=1).columns
         self.means = df[ORDERED_FEATURES].mean(axis=0).to_dict()
 
         self.pca.fit(df[self.pca_cols])
@@ -135,23 +138,36 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
             mapping = df[col].map(self.freqs[col])
             df[col] = df[col].mask(mapping < 0.01, 'Other')
 
-        df = self.get_dummies(df)
+        df = self.add_dummies(df)
         df = transform_pca(df, self.pca, self.pca_cols)
-
+        print(df.shape)
         return df.values
 
-    def get_dummies(self, df):
+    def add_dummies(self, df):
         """
         Create dummies in dataframe based on already determined columns. Pays attention to possibility of
-        difference in unique values between data which was used to fit transformer and data that we try to transform.
+        difference in unique values between data which was used to fit transformer and data to be transformed.
 
         :param df: source dataframe
         :return: dataframe, same length
         """
-        dummies_base = pd.get_dummies(self.dummies_base_df, columns=DISORDERED_FEATS, prefix=PREFIXES)
-        joint_dummy_df = pd.concat([df, self.dummies_base_df])[DISORDERED_FEATS]
-        df_dummies = pd.get_dummies(joint_dummy_df, columns=DISORDERED_FEATS, prefix=PREFIXES).iloc[:df.shape[0], :]
-        df_dummies = df_dummies.loc[:, dummies_base.columns]
+
+        df_dummies = pd.get_dummies(df.loc[:, DISORDERED_FEATS], prefix=PREFIXES)
+        dummy_cols = df_dummies.columns
+        df_len = df_dummies.shape[0]
+
+        dummies_to_drop = set(dummy_cols).difference(set(self.base_dummy_cols))
+        dummies_to_add = set(self.base_dummy_cols).difference(set(dummy_cols))
+
+        df_dummies = df_dummies.drop(list(dummies_to_drop), axis=1)
+
+        dummies_to_add_size = (df_len, len(dummies_to_add))
+        dummies_to_add_data = np.zeros(dummies_to_add_size)
+        df_dummies_to_add = pd.DataFrame(data=dummies_to_add_data,
+                                         columns=list(dummies_to_add))
+        df_dummies = pd.concat([df_dummies, df_dummies_to_add], axis=1)
+        df_dummies = df_dummies.loc[:, self.base_dummy_cols]
+
         df = pd.concat([df.drop(DISORDERED_FEATS, axis=1), df_dummies], axis=1)
         return df
 
@@ -210,3 +226,7 @@ def basic_feature_engineering(df):
     df = df.drop(FEATURES_TO_DROP, axis=1)
 
     return df
+
+
+def default_freq():
+    return 0

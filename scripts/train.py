@@ -2,7 +2,7 @@ from sys import path
 path.append('..')
 import argparse
 import pandas as pd
-from os import path
+import os
 from sklearn.model_selection import RepeatedKFold
 from sklearn.linear_model import Ridge
 from sklearn.preprocessing import StandardScaler
@@ -10,7 +10,7 @@ from housinglib.eda import HousingTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from housinglib.utils import split_dataset
-import dill
+import pickle
 import warnings
 warnings.filterwarnings('ignore')
 random_state = 17
@@ -38,12 +38,14 @@ def main():
     regr.fit(X_train, y_train)
 
     filename = args.model_name + '.pk'
-    out_path = path.join(args.output_dir, filename)
+    out_path = os.path.join(args.output_dir, filename)
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
     print(out_path)
     if args.disable_grid_search:
-        dill.dump(regr.best_estimator_, open(out_path, 'wb'))
+        pickle.dump(regr.best_estimator_, open(out_path, 'wb'))
     else:
-        dill.dump(regr, open(out_path, 'wb'))
+        pickle.dump(regr, open(out_path, 'wb'))
     print('Saved model at ', out_path)
 
 
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     parser.add_argument('--prepared-data', action='store_true', default=False,
                         help='if input is one of the files generated from running the script split_data.py')
     parser.add_argument('--alpha', type=float, default=1.0, help='alpha in Ridge regressor')
-    parser.add_argument('--n_components', type=int, default=6, choices=[1, 2, 3, 4, 5, 6],
+    parser.add_argument('--n_components', type=int, default=4, choices=[1, 2, 3, 4, 5, 6],
                         help='number of PCA components to leave')
     parser.add_argument('--disable-grid-search', action='store_false', default=True,
                         help='true means using memonger to save momory, https://github.com/dmlc/mxnet-memonger')
