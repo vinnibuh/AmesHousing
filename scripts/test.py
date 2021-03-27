@@ -1,5 +1,3 @@
-from sys import path
-path.append('..')
 import argparse
 import pandas as pd
 from sklearn.metrics import mean_squared_error, r2_score
