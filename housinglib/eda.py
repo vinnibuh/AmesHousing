@@ -179,7 +179,7 @@ def make_binary_features(df):
     :return: dataframe, same length
     """
     df = df.copy()
-    df['is_remodeled'] = (df['Year Built'] == df['Year Remod/Add']).astype('int32')
+    df['is_remodeled'] = df['Year Built'].eq(df['Year Remod/Add']).astype('int32')
     df['bsmt_cond_dmy'] = (df['Bsmt Cond'].isin(['missing', 'Po', 'Fa'])).astype('int32')
     df['fireplace_qu_dmy'] = (df['Fireplace Qu'].isin(['Po', 'Fa'])).astype('int32')
     df['garage_cond_dmy'] = (df['Garage Cond'] == 'TA').astype('int32')

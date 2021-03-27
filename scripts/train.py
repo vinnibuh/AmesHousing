@@ -1,17 +1,18 @@
-from sys import path
-path.append('..')
 import argparse
 import pandas as pd
 import os
 from sklearn.model_selection import RepeatedKFold
 from sklearn.linear_model import Ridge
 from sklearn.preprocessing import StandardScaler
-from housinglib.eda import HousingTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
-from housinglib.utils import split_dataset
 import pickle
 import warnings
+from sys import path
+path.append('..')
+
+from housinglib.eda import HousingTransformer
+
 warnings.filterwarnings('ignore')
 random_state = 17
 
