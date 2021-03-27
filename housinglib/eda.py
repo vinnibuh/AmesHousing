@@ -140,7 +140,6 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
 
         df = self.add_dummies(df)
         df = transform_pca(df, self.pca, self.pca_cols)
-        print(df.shape)
         return df.values
 
     def add_dummies(self, df):
