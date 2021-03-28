@@ -1,3 +1,4 @@
+"""Classes and functions used for EDA step of research"""
 from collections import defaultdict
 import pandas as pd
 import numpy as np

@@ -1,21 +1,39 @@
-.. ivchenkov.yap documentation master file, created by
-   sphinx-quickstart on Sun Mar  7 22:31:13 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+**************************************************
+Welcome to AmesHousing Prediction's documentation!
+**************************************************
 
-Welcome to ivchenkov.yap's documentation!
-=========================================
+The goal of this project is to create a service
+for predicting real estate prices and is based on
+`AmesHousing dataset`_.
+The work was done as part of the course 'Software Engineering in Machine Learning' in MIPT.
+
+.. Structure of the documentation
+
+Getting started
+===============
+
+This section provides information to install and test the package.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-   
-   housinglib
+   :hidden:
+   :caption: GETTING STARTED:
 
+   getting_started/install
+   getting_started/features
 
-Indices and tables
+API Reference
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+This section provides full class and function reference of project.
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: API Reference:
+
+   housinglib
+
+.. References
+
+.. _AmesHousing dataset: http://jse.amstat.org/v19n3/decock.pdf

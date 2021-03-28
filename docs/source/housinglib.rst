@@ -1,45 +1,72 @@
-housinglib package
 ==================
+housinglib
+==================
+This is the class and functions reference for AmesHousing Prediction project.
+Please, refer to :ref:`our quick guide <installation>` for examples of usage.
 
-Submodules
-----------
-
-housinglib.cleansing module
----------------------------
+:mod:`housinglib.cleansing`: Data cleaning functions
+====================================================
 
 .. automodule:: housinglib.cleansing
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
 
-housinglib.eda module
----------------------
+.. currentmodule:: housinglib
+
+Functions
+---------
+
+.. autosummary::
+    :nosignatures:
+    :toctree: generated/
+
+    cleansing.data_cleaning
+    cleansing.fill_na_real
+    cleansing.drop_precision
+
+:mod:`housinglib.eda`: Exploratory Analysis support
+===================================================
 
 .. automodule:: housinglib.eda
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
 
-housinglib.statemachine module
-------------------------------
+.. currentmodule:: housinglib
 
-.. automodule:: housinglib.statemachine
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Classes
+-------
 
-housinglib.utils module
------------------------
+.. autosummary::
+    :nosignatures:
+    :toctree: generated/
+
+    eda.HousingTransformer
+
+Functions
+---------
+
+.. autosummary::
+    :nosignatures:
+    :toctree: generated/
+
+    eda.make_binary_features
+    eda.transform_pca
+    eda.basic_feature_engineering
+
+:mod:`housinglib.utils`: Other useful functions
+===============================================
 
 .. automodule:: housinglib.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :no-members:
+   :no-inherited-members:
 
-Module contents
----------------
+.. currentmodule:: housinglib
 
-.. automodule:: housinglib
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Functions
+---------
+
+.. autosummary::
+    :nosignatures:
+    :toctree: generated/
+
+    utils.split_dataset

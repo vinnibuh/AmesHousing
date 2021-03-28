@@ -1,3 +1,4 @@
+"""Functions to conduct basic data cleaning"""
 COLS_TO_FILTER = [
     'SalePrice', 'Garage Area', 'Total Bsmt SF',
     'BsmtFin SF 1', 'BsmtFin SF 2', 'Misc Val',
@@ -60,7 +61,7 @@ def data_cleaning(df, lower_precision=True, drop_rare_values=True, csv_out=None)
 
 def fill_na_real(real_df):
     """
-    Slightly less straightforward impleentation of filling NaN values. Fills features with small number of unique
+    Slightly less straightforward implementation of filling NaN values. Fills features with small number of unique
     values with median, others with mean.
 
     :param real_df: dataframe
