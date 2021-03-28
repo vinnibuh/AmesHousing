@@ -12,7 +12,6 @@
 #
 import os
 import sys
-import sphinx_rtd_theme
 sys.path.insert(0, os.path.abspath('../../'))
 
 
@@ -33,6 +32,7 @@ release = '1.0.1'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx_rtd_theme'
 ]
 autodoc_mock_imports = ['numpy', 'sklearn', 'pandas', 'matplotlib', 'seaborn', 'tqdm']
@@ -52,6 +52,15 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+
+# Map the directives to the default values
+autodoc_default_options = {
+    "members": None,
+    "inherited-members": None
+}
+
+# Generate a stub page for all found documents
+autosummary_generate = True
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
