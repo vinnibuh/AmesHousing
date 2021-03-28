@@ -11,7 +11,7 @@ Sadly enough, right now there is no way to install this project :(
 Dependencies
 ------------
 
-AmesHousing Prediction requires the following dependencies:
+AmesHousing Prediction project requires the following dependencies:
 
 +--------------------------+
 | Runtime                  |
