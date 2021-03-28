@@ -1,26 +1,24 @@
-from sys import path
-path.append('..')
 import argparse
 import pandas as pd
-from os import path
+import os
 from sklearn.model_selection import RepeatedKFold
 from sklearn.linear_model import Ridge
 from sklearn.preprocessing import StandardScaler
-from housinglib.eda import HousingTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
-from housinglib.utils import split_dataset
-import joblib
+import pickle
 import warnings
+from sys import path
+path.append('..')
+
+from housinglib.eda import HousingTransformer
+
 warnings.filterwarnings('ignore')
 random_state = 17
 
 
 def main():
-    if not args.prepared_data:
-        split_dataset(args.train_path, '../data')
-
-    df_train = pd.read_csv('../data/train.csv')
+    df_train = pd.read_csv(args.data_path)
     X_train, y_train = df_train.drop(['SalePrice'], axis=1), df_train.SalePrice
     rkf = RepeatedKFold(n_splits=5, n_repeats=2, random_state=random_state)
     estimators = [('transform', HousingTransformer()),
@@ -37,26 +35,27 @@ def main():
                         transform__n_pca_components=args.n_components)
     regr.fit(X_train, y_train)
 
-    filename = args.model_name + '.pickle'
-    out_path = path.join(args.output_dir, filename)
+    out_path = args.output_path
+    out_folder = os.path.dirname(out_path)
+    if not os.path.exists(out_folder):
+        os.makedirs(out_folder)
     if args.disable_grid_search:
-        joblib.dump(regr.best_estimator_, out_path)
+        pickle.dump(regr.best_estimator_, open(out_path, 'wb'))
     else:
-        joblib.dump(regr, out_path)
+        pickle.dump(regr, open(out_path, 'wb'))
     print('Saved model at ', out_path)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="command for training resnet-v2")
-    parser.add_argument('--output-dir', type=str, default='../models/', help='the directory to save the trained model')
-    parser.add_argument('--train-path', type=str, default='../data/AmesHousing.txt', help='the input raw data file')
-    parser.add_argument('--model-name', type=str, default='model', help='name of file to save')
-    parser.add_argument('--prepared-data', action='store_true', default=False,
-                        help='if input is one of the files generated from running the script split_data.py')
-    parser.add_argument('--alpha', type=float, default=1.0, help='alpha in Ridge regressor')
-    parser.add_argument('--n_components', type=int, default=6, choices=[1, 2, 3, 4, 5, 6],
+    parser = argparse.ArgumentParser(description="command for training model on AmesHousing dataset")
+    parser.add_argument('-d', '--data-path', type=str, default='../data/train.csv',
+                        help='path to train data made by utils.split_dataset')
+    parser.add_argument('-o', '--output-path', type=str, default='../models/model.pk',
+                        help='path to save the model')
+    parser.add_argument('-a', '--alpha', type=float, default=1.0, help='alpha in Ridge regressor')
+    parser.add_argument('-c', '--n_components', type=int, default=4, choices=[1, 2, 3, 4, 5, 6],
                         help='number of PCA components to leave')
     parser.add_argument('--disable-grid-search', action='store_false', default=True,
-                        help='true means using memonger to save momory, https://github.com/dmlc/mxnet-memonger')
+                        help='do not use GridSearch in training, use fixed model parameters')
     args = parser.parse_args()
     main()
