@@ -9,7 +9,7 @@ from sklearn.pipeline import Pipeline
 import pickle
 import warnings
 from sys import path
-path.append('..')
+path.append('.')
 
 from housinglib.eda import HousingTransformer
 
@@ -48,9 +48,9 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="command for training model on AmesHousing dataset")
-    parser.add_argument('-d', '--data-path', type=str, default='../data/train.csv',
+    parser.add_argument('-d', '--data-path', type=str, default='./data/train.csv',
                         help='path to train data made by utils.split_dataset')
-    parser.add_argument('-o', '--output-path', type=str, default='../models/model.pk',
+    parser.add_argument('-o', '--output-path', type=str, default='./models/model.pk',
                         help='path to save the model')
     parser.add_argument('-a', '--alpha', type=float, default=1.0, help='alpha in Ridge regressor')
     parser.add_argument('-c', '--n_components', type=int, default=4, choices=[1, 2, 3, 4, 5, 6],
