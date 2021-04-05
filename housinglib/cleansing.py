@@ -8,7 +8,7 @@ COLS_TO_FILTER = [
 ]
 
 
-def data_cleaning(df, lower_precision=True, drop_rare_values=True, csv_out=None):
+def data_cleaning(df, lower_precision=True):
     """
     Conduct primary data cleaning. Includes dropping error entries, filtering outliers, changing precision,
     and dropping features with too many NaNs. Resets index of dataframe. Converts type of all categorical
@@ -16,8 +16,6 @@ def data_cleaning(df, lower_precision=True, drop_rare_values=True, csv_out=None)
 
     :param df: raw dataset from AmesHousing
     :param lower_precision: if True, drop precision
-    :param drop_rare_values: if True, drop features with rare values
-    :param csv_out: if present, store in this path processed data
     :return: dataframe
     """
     initial_data_size = df.shape[0]
@@ -33,11 +31,6 @@ def data_cleaning(df, lower_precision=True, drop_rare_values=True, csv_out=None)
         mask = mask & ~(df[col] > threshold)
     df = df.loc[mask, :]
 
-    if drop_rare_values:
-        df.drop(['Pool QC', 'Misc Feature', 'Alley',
-                 '3Ssn Porch', 'Pool Area'],
-                axis=1, inplace=True)
-
     if lower_precision:
         df = drop_precision(df)
 
@@ -52,9 +45,6 @@ def data_cleaning(df, lower_precision=True, drop_rare_values=True, csv_out=None)
     print('Initial data size: ', initial_data_size)
     print('Dropped {} lines'.format(initial_data_size-cleaned_data_size))
     print('Final data size: ', cleaned_data_size)
-
-    if csv_out is not None:
-        df.to_csv(csv_out)
 
     return df
 
