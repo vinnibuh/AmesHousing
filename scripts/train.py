@@ -49,7 +49,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="command for training model on AmesHousing dataset")
     parser.add_argument('-d', '--data-path', type=str, default='./data/train.csv',
-                        help='path to train data made by utils.split_dataset')
+                        help='path to train data made by scripts/split.py')
     parser.add_argument('-o', '--output-path', type=str, default='./models/model.pk',
                         help='path to save the model')
     parser.add_argument('-a', '--alpha', type=float, default=1.0, help='alpha in Ridge regressor')
