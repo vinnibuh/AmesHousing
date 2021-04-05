@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error, r2_score
 import pickle
 import warnings
+from sys import path
+path.append('.')
 warnings.filterwarnings('ignore')
 random_state = 17
 
@@ -21,9 +23,9 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="command for testing")
-    parser.add_argument('-i', '--input-path', type=str, default='../models/model.pk',
+    parser.add_argument('-i', '--input-path', type=str, default='./models/model.pk',
                         help='path to pretrained model file made by train.py')
-    parser.add_argument('-d', '--data-path', type=str, default='../data/test.csv',
+    parser.add_argument('-d', '--data-path', type=str, default='./data/test.csv',
                         help='path to train data made by utils.split_dataset')
     args = parser.parse_args()
     main()
