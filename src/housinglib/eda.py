@@ -174,12 +174,20 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
 
 def make_binary_features(df):
     """
-    Create binary features in dataframe
+    Create binary features in dataframe for predefined columns. New columns are appended
+    to other columns.
 
     :param df: source dataframe
     :return: dataframe, same length
     """
     df = df.copy()
+
+    necessary_cols = ['Year Built', 'Bsmt Cond', 'Fireplace Qu',
+                      'Garage Cond', 'Sale Type', 'Electrical',
+                      'Mas Vnr Type', 'Lot Shape', 'Land Slope']
+
+    assert set(necessary_cols).issubset(set(df.columns))
+
     df['is_remodeled'] = df['Year Built'].eq(df['Year Remod/Add']).astype('int32')
     df['bsmt_cond_dmy'] = (df['Bsmt Cond'].isin(['missing', 'Po', 'Fa'])).astype('int32')
     df['fireplace_qu_dmy'] = (df['Fireplace Qu'].isin(['Po', 'Fa'])).astype('int32')
@@ -203,7 +211,7 @@ def transform_pca(df, pca, cols):
     :param cols: subset of columns in form of list
     :return: dataframe, same length
     """
-    X = df[cols].values
+    X = df.loc[:, cols].values
     X_reduced = pca.transform(X)
     X_frame = pd.DataFrame(X_reduced, columns=['comp_' + str(idx) for idx in range(pca.n_components)])
     X_frame.index = df.index
