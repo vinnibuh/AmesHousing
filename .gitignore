@@ -2,4 +2,5 @@ docs/build
 *.pyc
 .ipynb_checkpoints
 .idea
+.venv
 *.DS_Store
