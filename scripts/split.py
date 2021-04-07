@@ -1,24 +1,13 @@
 import argparse
+import os
 import pandas as pd
 import numpy as np
-import os
 from sklearn.model_selection import train_test_split
-from sys import path
-path.append('.')
-
 from housinglib.cleansing import data_cleaning
 from housinglib.eda import basic_feature_engineering
 
 
-def main():
-    """
-    Read raw dataset, preprocess (to some extent), split it on train/test and store in `csv` files.
-    Names of subsets: `train.csv` and `test.csv`
-
-    :param file_path: path to dataset file with extension `.txt`
-    :param output_directory: path to folder, where data should be stored.
-    :return:
-    """
+def split():
     raw = pd.read_table(args.data_path, index_col=0)
     df = data_cleaning(raw)
     df = basic_feature_engineering(df)
@@ -38,4 +27,4 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output-path', type=str, default='./data',
                         help='path to save preprocesses models')
     args = parser.parse_args()
-    main()
+    split()

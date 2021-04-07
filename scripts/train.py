@@ -1,23 +1,20 @@
+import os
+import pickle
+import warnings
 import argparse
 import pandas as pd
-import os
 from sklearn.model_selection import RepeatedKFold
 from sklearn.linear_model import Ridge
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
-import pickle
-import warnings
-from sys import path
-path.append('.')
-
 from housinglib.eda import HousingTransformer
 
 warnings.filterwarnings('ignore')
 random_state = 17
 
 
-def main():
+def train():
     df_train = pd.read_csv(args.data_path)
     X_train, y_train = df_train.drop(['SalePrice'], axis=1), df_train.SalePrice
     rkf = RepeatedKFold(n_splits=5, n_repeats=2, random_state=random_state)
@@ -58,4 +55,4 @@ if __name__ == "__main__":
     parser.add_argument('--disable-grid-search', action='store_false', default=True,
                         help='do not use GridSearch in training, use fixed model parameters')
     args = parser.parse_args()
-    main()
+    train()

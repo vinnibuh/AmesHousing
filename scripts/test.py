@@ -1,15 +1,15 @@
 import argparse
-import pandas as pd
-from sklearn.metrics import mean_squared_error, r2_score
 import pickle
 import warnings
-from sys import path
-path.append('.')
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+
 warnings.filterwarnings('ignore')
 random_state = 17
 
 
-def main():
+def test():
     df_test = pd.read_csv(args.data_path)
     X_val, y_val = df_test.drop(['SalePrice'], axis=1), df_test.SalePrice
     regr = pickle.load(open(args.input_path, 'rb'))
@@ -28,4 +28,4 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--data-path', type=str, default='./data/test.csv',
                         help='path to train data made by utils.split_dataset')
     args = parser.parse_args()
-    main()
+    test()
