@@ -116,6 +116,9 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
                 .sort_values().rank(method='first').to_dict()
             df[col] = value.map(self.ranking[col])
 
+        def default_freq():
+            return 0
+
         for idx, col in enumerate(DISORDERED_FEATS):
             freqs = df[col].value_counts(normalize=True).to_dict()
             mapping = df[col].map(freqs)
@@ -234,7 +237,3 @@ def basic_feature_engineering(df):
     df = df.drop(FEATURES_TO_DROP, axis=1)
 
     return df
-
-
-def default_freq():
-    return 0
