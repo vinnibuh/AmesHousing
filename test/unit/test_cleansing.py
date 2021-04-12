@@ -2,9 +2,6 @@ import pytest
 import numpy as np
 import pandas as pd
 from sys import path
-
-path.append('.')
-
 from housinglib.cleansing import drop_precision, fill_na_real, data_cleaning
 
 

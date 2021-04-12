@@ -3,16 +3,13 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 from sys import path
-
-path.append('.')
-
 import housinglib.eda as eda
 import housinglib.cleansing as cleansing
 
 
 @pytest.mark.parametrize('n_components',
                          [1, 2, 3, 4, 5, 6])
-def test_basic_transform_pca(n_components):
+def test_transform_pca(n_components):
     rng = np.random.default_rng()
     col_names = ['f_' + str(n) for n in range(20)]
     source_df = pd.DataFrame(rng.random((100, 20), dtype='float64'),

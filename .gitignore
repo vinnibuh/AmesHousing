@@ -3,6 +3,7 @@ docs/build
 .ipynb_checkpoints
 .idea
 .venv
+.coverage
 build/
 dist/
 *.egg-info/
