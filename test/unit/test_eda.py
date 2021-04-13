@@ -2,9 +2,9 @@ import pytest
 import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
-from sys import path
 import housinglib.eda as eda
 import housinglib.cleansing as cleansing
+from housinglib.utils import csv_to_samples
 
 
 @pytest.mark.parametrize('n_components',
@@ -59,3 +59,32 @@ def test_basic_feature_engineering():
     not_dropped_cat_feats = cat_feats.difference(set(eda.FEATURES_TO_DROP))
     mapped_columns_df = test_df.loc[:, list(not_dropped_cat_feats)]
     assert mapped_columns_df.apply(if_values_mapped, axis=0, raw=False).all()
+
+
+@pytest.mark.parametrize('n_pca_components, pca_cols',
+                         [(4, None),
+                          (1, None),
+                          (3, ['Functional', 'Central Air', 'Paved Drive']),
+                          (1, ['Functional', 'Central Air', 'Paved Drive'])],
+                         )
+def test_housing_transformer(n_pca_components, pca_cols):
+    X_train, y_train = csv_to_samples('./data/train.csv')
+    X_train_copy, y_train_copy = X_train.copy(), y_train.copy()
+    tr = eda.HousingTransformer(n_pca_components, pca_cols)
+    X_train_transformed = tr.fit_transform(X_train_copy, y_train_copy)
+
+    assert X_train.equals(X_train_copy)
+    assert y_train.equals(y_train_copy)
+
+    assert tr.pca.n_features_ == len(tr.pca_cols)
+    assert len(tr.base_dummy_cols) > 0
+    assert set(tr.means.keys()).issubset(set(X_train.columns))
+
+    X_test, y_test = csv_to_samples('./data/test.csv')
+    X_test_transformed = tr.transform(X_test, y_test)
+
+    assert isinstance(X_test_transformed, np.ndarray)
+    assert isinstance(X_train_transformed, np.ndarray)
+    assert X_test_transformed.shape[0] == X_test.shape[0]
+    assert X_train_transformed.shape[0] == X_train.shape[0]
+
