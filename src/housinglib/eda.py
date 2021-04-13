@@ -116,9 +116,6 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
                 .sort_values().rank(method='first').to_dict()
             df[col] = value.map(self.ranking[col])
 
-        def default_freq():
-            return 0
-
         for idx, col in enumerate(DISORDERED_FEATS):
             freqs = df[col].value_counts(normalize=True).to_dict()
             mapping = df[col].map(freqs)
@@ -134,13 +131,14 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, df: pd.DataFrame, y=None):
+        df = df.copy()
         for col, value in df[ORDERED_FEATURES].iteritems():
-            df[col] = value.map(self.ranking[col])
-            df[col] = df[col].fillna(self.means[col])
+            df.loc[:, col] = value.map(self.ranking[col])
+            df.loc[:, col] = df[col].fillna(self.means[col])
 
         for idx, col in enumerate(DISORDERED_FEATS):
             mapping = df[col].map(self.freqs[col])
-            df[col] = df[col].mask(mapping < 0.01, 'Other')
+            df.loc[:, col] = df[col].mask(mapping < 0.01, 'Other')
 
         df = self.add_dummies(df)
         df = transform_pca(df, self.pca, self.pca_cols)
@@ -237,3 +235,6 @@ def basic_feature_engineering(df):
     df = df.drop(FEATURES_TO_DROP, axis=1)
 
     return df
+
+def default_freq():
+    return 0
