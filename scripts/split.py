@@ -22,7 +22,7 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="command for splitting and preprocessing AmesHousing dataset")
-    parser.add_argument('-p', '--data-path', type=str, default='./data/AmesHousing.txt',
+    parser.add_argument('-d', '--data-path', type=str, default='./data/AmesHousing.txt',
                         help='path to raw data from AmesHousing')
     parser.add_argument('-o', '--output-path', type=str, default='./data',
                         help='path to save preprocesses models')
