@@ -42,6 +42,3 @@ def test(X, y, model):
     mse_val = mean_squared_error(y, y_predict)
     return {'MSLE': mse_val,
             'R2': r2_val}
-
-
-
