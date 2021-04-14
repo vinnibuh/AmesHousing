@@ -21,6 +21,8 @@ with open(f"./requirements.txt", 'r') as f:
 
 tests_require = [
     'pytest',
+    'coverage',
+    'pytest-cov',
     'mutmut'
 ]
 
