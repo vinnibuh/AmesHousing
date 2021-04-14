@@ -114,12 +114,12 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         for col, value in df[ORDERED_FEATURES].iteritems():
             self.ranking[col] = df.groupby(by=col)['SalePrice'].mean() \
                 .sort_values().rank(method='first').to_dict()
-            df[col] = value.map(self.ranking[col])
+            df.loc[:, col] = value.map(self.ranking[col])
 
         for idx, col in enumerate(DISORDERED_FEATS):
             freqs = df[col].value_counts(normalize=True).to_dict()
             mapping = df[col].map(freqs)
-            df[col] = df[col].mask(mapping < 0.01, 'Other')
+            df.loc[:, col] = df[col].mask(mapping < 0.01, 'Other')
 
             self.freqs[col] = defaultdict(default_freq, freqs)
 
@@ -127,7 +127,7 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         self.base_dummy_cols = df.filter(regex='dmy_+', axis=1).columns
         self.means = df[ORDERED_FEATURES].mean(axis=0).to_dict()
 
-        self.pca.fit(df[self.pca_cols])
+        self.pca.fit(df[self.pca_cols].values)
         return self
 
     def transform(self, df: pd.DataFrame, y=None):
@@ -152,7 +152,7 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         :param df: source dataframe
         :return: dataframe, same length
         """
-
+        df = df.copy()
         df_dummies = pd.get_dummies(df.loc[:, DISORDERED_FEATS], prefix=PREFIXES)
         dummy_cols = df_dummies.columns
         df_len = df_dummies.shape[0]
@@ -165,7 +165,8 @@ class HousingTransformer(BaseEstimator, TransformerMixin):
         dummies_to_add_size = (df_len, len(dummies_to_add))
         dummies_to_add_data = np.zeros(dummies_to_add_size)
         df_dummies_to_add = pd.DataFrame(data=dummies_to_add_data,
-                                         columns=list(dummies_to_add))
+                                         columns=list(dummies_to_add),
+                                         index=df_dummies.index)
         df_dummies = pd.concat([df_dummies, df_dummies_to_add], axis=1)
         df_dummies = df_dummies.loc[:, self.base_dummy_cols]
 
@@ -235,6 +236,7 @@ def basic_feature_engineering(df):
     df = df.drop(FEATURES_TO_DROP, axis=1)
 
     return df
+
 
 def default_freq():
     return 0

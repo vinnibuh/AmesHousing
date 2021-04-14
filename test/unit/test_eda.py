@@ -87,4 +87,3 @@ def test_housing_transformer(n_pca_components, pca_cols):
     assert isinstance(X_train_transformed, np.ndarray)
     assert X_test_transformed.shape[0] == X_test.shape[0]
     assert X_train_transformed.shape[0] == X_train.shape[0]
-
