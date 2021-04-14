@@ -1,10 +1,6 @@
 import pytest
 import numpy as np
 import pandas as pd
-from sys import path
-
-path.append('.')
-
 from housinglib.cleansing import drop_precision, fill_na_real, data_cleaning
 
 
@@ -54,7 +50,7 @@ def test_fill_na_real():
 
     assert result.shape == test_df.shape
 
-    assert not result.isna().any().any()
+    assert result.notna().all(axis=None)
 
     for i in range(250):
         assert test_df.iloc[nan_idx_x[i], nan_idx_y[i]] == fill_values[nan_idx_y[i]]
@@ -63,9 +59,15 @@ def test_fill_na_real():
 @pytest.mark.parametrize('lower_precision',
                          [True, False])
 def test_data_cleaning(lower_precision):
+    """Checks if processed DataFrame does not make anything exceptionally bad with data.
+    Also checks if 'lower_precision' parameter is working."""
     raw = pd.read_table('./data/AmesHousing.txt', index_col=0)
     df = data_cleaning(raw, lower_precision)
 
     assert df.shape[0] > 0
     assert df.shape[1] > 0
+    assert df.notna().all(axis=None)
 
+    if lower_precision:
+        assert 'int64' not in df.dtypes.values
+        assert 'float64' not in df.dtypes.values
