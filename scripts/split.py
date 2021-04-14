@@ -7,7 +7,7 @@ from housinglib.cleansing import data_cleaning
 from housinglib.eda import basic_feature_engineering
 
 
-def split():
+def main():
     raw = pd.read_table(args.data_path, index_col=0)
     df = data_cleaning(raw)
     df = basic_feature_engineering(df)
@@ -27,4 +27,4 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output-path', type=str, default='./data',
                         help='path to save preprocesses models')
     args = parser.parse_args()
-    split()
+    main()

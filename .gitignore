@@ -3,6 +3,8 @@ docs/build
 .ipynb_checkpoints
 .idea
 .venv
+.coverage
+.mutmut-cache
 build/
 dist/
 *.egg-info/
