@@ -16,7 +16,7 @@ variables:
 before_script:
   - apk update
   - apk add python3 
-  - apk add python3-pip
+  - apk add py3-pip
   - docker info
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - pip3 install -U sphinx
