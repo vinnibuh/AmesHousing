@@ -23,12 +23,16 @@ before_script:
  
 build:
   stage: build
+  tags: 
+    - local
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
 
 test_a:
   stage: test
+  tags:
+    - local
   script:
     - sphinx-build -b html ./docs/source ./public
   only:
@@ -38,6 +42,8 @@ test_a:
 
 test_b:
   stage: test
+  tags: 
+    - local
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker run $CONTAINER_TEST_IMAGE -v $(pwd):/content pytest --cov=housinglib --cov-branch --junitxml=report.xml --cov-report term-missing test --junitxml=/content/report.xml
@@ -48,6 +54,8 @@ test_b:
 
 pages:
   stage: deploy
+  tags:
+    - local
   script:
     - sphinx-build -b html ./docs/source ./public
   artifacts:
@@ -58,6 +66,8 @@ pages:
 
 release-image:
   stage: release
+  tags:
+    - local
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
