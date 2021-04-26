@@ -4,6 +4,7 @@ docs/build
 .idea
 .venv
 .coverage
+.hypothesis
 .mutmut-cache
 build/
 dist/
