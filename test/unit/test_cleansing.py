@@ -48,12 +48,12 @@ def test_fill_na_real():
                              test_df.iloc[:, 10:].median()], axis=0)
     result = fill_na_real(test_df)
 
-    assert result.shape[0] == test_df.shape[0]
+    assert result.shape == test_df.shape
 
     assert result.notna().all(axis=None)
 
     for i in range(250):
-        assert result.iloc[nan_idx_x[i], nan_idx_y[i]] == fill_values[nan_idx_y[i]]
+        assert test_df.iloc[nan_idx_x[i], nan_idx_y[i]] == fill_values[nan_idx_y[i]]
 
 
 @pytest.mark.parametrize('lower_precision',
