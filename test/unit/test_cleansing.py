@@ -48,7 +48,7 @@ def test_fill_na_real():
                              test_df.iloc[:, 10:].median()], axis=0)
     result = fill_na_real(test_df)
 
-    assert result.shape == test_df.shape
+    assert result.shape[0] == test_df.shape[0]
 
     assert result.notna().all(axis=None)
 
