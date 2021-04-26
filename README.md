@@ -114,10 +114,16 @@ In order to run this container you'll need Docker installed.
 
 #### Container Parameters
 
-Run Flask app
+Run CLI:
 
 ```shell
-docker run -d -p 5000:5000 registry.gitlab.com/se_ml_course/2021/ivchenkov.yap:latest
+docker run -it registry.gitlab.com/se_ml_course/2021/ivchenkov.yap:latest
+```
+
+While in CLI, run train/test/split scripts:
+
+```shell
+python3 ./scripts/script_name.py
 ```
 
 #### Useful File Locations

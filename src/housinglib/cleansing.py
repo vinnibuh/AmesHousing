@@ -57,6 +57,7 @@ def fill_na_real(real_df):
     :param real_df: dataframe
     :return: dataframe, same_shape
     """
+    real_df = real_df.dropna(axis='columns', how='all')
     val_counts_float_cols = real_df.nunique()
 
     few_unique_vals = val_counts_float_cols[val_counts_float_cols <= 10].index
