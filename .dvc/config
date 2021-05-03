@@ -1,0 +1,4 @@
+[core]
+    remote = mipt_drive
+['remote "mipt_drive"']
+    url = gdrive://1OSz5yQSK49qBmYO-CntIM_iKM8lW9MgW
