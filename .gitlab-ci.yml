@@ -43,6 +43,7 @@ retrain_model:
     - branches
   except:
     - master
+  allow_failure: true # TODO
 
 test_a:
   stage: test
