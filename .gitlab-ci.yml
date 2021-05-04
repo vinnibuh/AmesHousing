@@ -4,14 +4,15 @@ services:
 
 stages: 
   - build
+  - retrain
   - test
   - release
   - deploy
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/housinglib-testing:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/housinglib:latest
 
 before_script:
   - apk update
@@ -30,6 +31,18 @@ build:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
+
+retrain_model:
+  stage: retrain
+  tags:
+    - local
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker run $CONTAINER_TEST_IMAGE make predict
+  only:
+    - branches
+  except:
+    - master
 
 test_a:
   stage: test

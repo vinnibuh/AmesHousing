@@ -1,4 +1,5 @@
 appdirs==1.4.4
+arrow==1.1.0
 atpublic==2.3
 attrs==20.3.0
 cached-property==1.5.2
@@ -41,10 +42,12 @@ idna==2.10
 iniconfig==1.1.1
 itsdangerous==1.1.0
 Jinja2==2.11.3
+jinja2-time==0.2.0
 joblib==1.0.1
 jsonpath-ng==1.5.2
 junit-xml==1.8
 mailchecker==4.0.7
+make==0.1.6.post2
 MarkupSafe==1.1.1
 mutmut==2.1.0
 nanotime==0.5.2
