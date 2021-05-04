@@ -1,0 +1,12 @@
+docs/build
+*.pyc
+.ipynb_checkpoints
+.idea
+.venv
+.coverage
+.hypothesis
+.mutmut-cache
+build/
+dist/
+*.egg-info/
+*.DS_Store

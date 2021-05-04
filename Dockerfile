@@ -3,6 +3,7 @@ MAINTAINER Ivchenkov Yaroslav "ivchenkov.yap@phystech.edu"
 WORKDIR /app
 COPY requirements-test.txt requirements-test.txt
 RUN apt-get update
+RUN apt-get -y install make
 RUN pip3 install -r requirements-test.txt
 COPY . .
 RUN python3 setup.py install
