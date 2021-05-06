@@ -40,9 +40,10 @@ retrain_model:
   before_script:
     - apt-get update
     - apt-get -y install make
+    - apt-get install --only-upgrade base64
     - pip3 install -r requirements-test.txt
     - python3 setup.py install
-    - base64 -D -i $GDRIVE_SERVICE_ACCOUNT_JSON > gdrive_service_key.json
+    - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > gdrive_service_key.json
   script:
     - dvc remote modify mipt_drive gdrive_service_account_json_file_path gdrive_service_key.json
     - make predict
