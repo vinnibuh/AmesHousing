@@ -2,6 +2,14 @@ default:
   image: docker:19.03.12
   services:
     - docker:19.03.12-dind
+  before_script:
+    - apk update
+    - apk add python3 
+    - apk add py3-pip
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - pip3 install -U sphinx
+    - pip3 install -U sphinx_rtd_theme
 
 stages:
   - retrain 
@@ -14,15 +22,6 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/housinglib-testing:$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE/housinglib:latest
-
-before_script:
-  - apk update
-  - apk add python3 
-  - apk add py3-pip
-  - docker info
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - pip3 install -U sphinx
-  - pip3 install -U sphinx_rtd_theme
 
 build:
   stage: build
@@ -39,14 +38,13 @@ retrain_model:
   tags:
     - local
   before_script:
-  script:
     - apt-get update
     - apt-get -y install make
     - pip3 install -r requirements-test.txt
     - python3 setup.py install
-    - dvc remote add -d mipt_drive gdrive://$GDRIVE_BUCKET
-    - dvc remote modify mipt_drive gdrive_use_service_account true
-    - dvc remote modify mipt_drive gdrive_service_account_json_file_path $GDRIVE_SERVICE_ACCOUNT_JSON
+    - base64 -D -i $GDRIVE_SERVICE_ACCOUNT_JSON > gdrive_service_key.json
+  script:
+    - dvc remote modify mipt_drive gdrive_service_account_json_file_path gdrive_service_key.json
     - make predict
   only:
     - branches
