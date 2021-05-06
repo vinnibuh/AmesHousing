@@ -1,13 +1,9 @@
-.PHONY: add-remote clean requirements data train predict test sync-data-to-gdrive sync-data-from-gdrive
+.PHONY: clean requirements data train predict test sync-data-to-gdrive sync-data-from-gdrive
 
 PYTHON_INTERPRETER = python3
 BUCKET=1OSz5yQSK49qBmYO-CntIM_iKM8lW9MgW
 
 include .env
-
-## Add GDrive file storage as DVC remote
-add-remote: create_environment
-	dvc remote add -f -d mipt_drive gdrive://$(BUCKET)
 
 ## Setup environment for python (all processes run in venv)
 create_environment:
@@ -38,11 +34,11 @@ data: requirements sync-data-from-gdrive
 	dvc push -r mipt_drive
 
 ## Pull latest file versions from GDrive storage
-sync-data-from-gdrive: add-remote
+sync-data-from-gdrive: 
 	dvc pull 
 
 ## Push files to GDrive storage
-sync-data-to-gdrive: add-remote
+sync-data-to-gdrive: 
 	dvc push -r mipt_drive
 
 ## Train model and store all data and info in GDrive with DVC

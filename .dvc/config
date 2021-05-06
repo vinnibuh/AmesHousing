@@ -2,3 +2,5 @@
     remote = mipt_drive
 ['remote "mipt_drive"']
     url = gdrive://1OSz5yQSK49qBmYO-CntIM_iKM8lW9MgW
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = /etc/se-ml-dvc-2a3f346819c2.json
