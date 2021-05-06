@@ -1,10 +1,11 @@
-image: docker:19.03.12
-services:
-  - docker:19.03.12-dind
+default:
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
 
-stages: 
+stages:
+  - retrain 
   - build
-  - retrain
   - test
   - release
   - deploy
@@ -22,7 +23,7 @@ before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - pip3 install -U sphinx
   - pip3 install -U sphinx_rtd_theme
- 
+
 build:
   stage: build
   tags: 
@@ -34,16 +35,23 @@ build:
 
 retrain_model:
   stage: retrain
+  image: python:3.9.3-slim-buster
   tags:
     - local
+  before_script:
   script:
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker run $CONTAINER_TEST_IMAGE make predict
+    - apt-get update
+    - apt-get -y install make
+    - pip3 install -r requirements-test.txt
+    - python3 setup.py install
+    - dvc remote add -d mipt_drive gdrive://$GDRIVE_BUCKET
+    - dvc remote modify mipt_drive gdrive_use_service_account true
+    - dvc remote modify mipt_drive gdrive_service_account_json_file_path $GDRIVE_SERVICE_ACCOUNT_JSON
+    - make predict
   only:
     - branches
   except:
     - master
-  allow_failure: true # TODO
 
 test_a:
   stage: test
