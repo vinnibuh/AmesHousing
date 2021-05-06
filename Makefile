@@ -49,7 +49,7 @@ train: data
 		--models-path ${MODELS_PATH} \
 		--log-path ${LOG_PATH}
 	dvc add -R ${MODELS_PATH}
-	dvc add -R ${LOG_PATH}$
+	dvc add -R ${LOG_PATH}
 	dvc commit
 	dvc push -r mipt_drive
 
