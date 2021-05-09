@@ -44,7 +44,7 @@ retrain_model:
     - apt-get -y install make
     - pip3 install -r requirements-test.txt
     - python3 setup.py install
-    - mkdir .artifacts || True
+    - mkdir .artifacts || true
     - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
  script:
     - make predict
