@@ -46,7 +46,7 @@ retrain_model:
     - python3 setup.py install
     - mkdir .artifacts || true
     - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
- script:
+  script:
     - make predict
   only:
     - branches
