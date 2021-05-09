@@ -8,6 +8,8 @@ default:
     - apk add py3-pip
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - mkdir .artifacts || True
+    - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
     - pip3 install -U sphinx
     - pip3 install -U sphinx_rtd_theme
 
@@ -42,9 +44,9 @@ retrain_model:
     - apt-get -y install make
     - pip3 install -r requirements-test.txt
     - python3 setup.py install
-    - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > gdrive_service_key.json
-  script:
-    - dvc remote modify mipt_drive gdrive_service_account_json_file_path gdrive_service_key.json
+    - mkdir .artifacts || True
+    - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
+ script:
     - make predict
   only:
     - branches
@@ -68,7 +70,7 @@ test_b:
     - local
   script:
     - docker pull $CONTAINER_TEST_IMAGE
-    - docker run -v $(pwd):/content $CONTAINER_TEST_IMAGE pytest --cov=housinglib --cov-branch --cov-report term-missing --cov-report xml:/content/coverage.xml test --junitxml=/content/report.xml
+    - docker run -v $(pwd):/app/.artifacts $CONTAINER_TEST_IMAGE make test
   artifacts:
     when: always
     reports:
