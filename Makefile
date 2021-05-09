@@ -12,6 +12,7 @@ create_environment:
 	. .venv/bin/activate
 	$(PYTHON_INTERPRETER) setup.py install
 	$(PYTHON_INTERPRETER) -m pip install -U pip 
+	dvc remote modify mipt_drive gdrive_service_account_json_file_path .artifacts/gdrive_service_key.json
 
 ## Remove all cached and compile Python files
 clean:
@@ -71,8 +72,8 @@ test: data
 	pytest --cov=housinglib \
 		--cov-branch \
 		--cov-report term-missing \
-		--cov-report xml:/content/coverage.xml \
-		--junitxml=/content/report.xml \
+		--cov-report xml:.artifacts/coverage.xml \
+		--junitxml=.artifacts/report.xml \
 		test
 
 .DEFAULT: help
