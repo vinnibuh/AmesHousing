@@ -1,4 +1,4 @@
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 from hypothesis.extra.pandas import column, data_frames
 
 import pandas as pd

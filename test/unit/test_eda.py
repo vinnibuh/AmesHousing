@@ -29,7 +29,7 @@ def test_transform_pca(n_components):
 
 
 def test_make_binary_features():
-    raw = pd.read_table('./data/AmesHousing.txt', index_col=0)
+    raw = pd.read_table('./data/raw/AmesHousing.txt', index_col=0)
     source_df = cleansing.data_cleaning(raw)
 
     test_df = eda.make_binary_features(source_df)
@@ -41,7 +41,7 @@ def test_make_binary_features():
 
 
 def test_basic_feature_engineering():
-    raw = pd.read_table('./data/AmesHousing.txt', index_col=0)
+    raw = pd.read_table('./data/raw/AmesHousing.txt', index_col=0)
     source_df = cleansing.data_cleaning(raw)
 
     test_df = eda.basic_feature_engineering(source_df)
@@ -68,7 +68,7 @@ def test_basic_feature_engineering():
                           (1, ['Functional', 'Central Air', 'Paved Drive'])],
                          )
 def test_housing_transformer(n_pca_components, pca_cols):
-    X_train, y_train = csv_to_samples('./data/train.csv')
+    X_train, y_train = csv_to_samples('./data/processed/stable/train.csv')
     X_train_copy, y_train_copy = X_train.copy(), y_train.copy()
     tr = eda.HousingTransformer(n_pca_components, pca_cols)
     X_train_transformed = tr.fit_transform(X_train_copy, y_train_copy)
@@ -80,7 +80,7 @@ def test_housing_transformer(n_pca_components, pca_cols):
     assert len(tr.base_dummy_cols) > 0
     assert set(tr.means.keys()).issubset(set(X_train.columns))
 
-    X_test, y_test = csv_to_samples('./data/test.csv')
+    X_test, y_test = csv_to_samples('./data/processed/stable/test.csv')
     X_test_transformed = tr.transform(X_test, y_test)
 
     assert isinstance(X_test_transformed, np.ndarray)

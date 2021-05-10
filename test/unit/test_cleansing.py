@@ -61,7 +61,7 @@ def test_fill_na_real():
 def test_data_cleaning(lower_precision):
     """Checks if processed DataFrame does not make anything exceptionally bad with data.
     Also checks if 'lower_precision' parameter is working."""
-    raw = pd.read_table('./data/AmesHousing.txt', index_col=0)
+    raw = pd.read_table('./data/raw/AmesHousing.txt', index_col=0)
     df = data_cleaning(raw, lower_precision)
 
     assert df.shape[0] > 0
