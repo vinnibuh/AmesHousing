@@ -51,6 +51,7 @@ retrain_model:
   only:
     refs:
       - feature/makefile
+      - merge_request
   except:
     - master
 
@@ -71,7 +72,7 @@ test_b:
     - local
   script:
     - docker pull $CONTAINER_TEST_IMAGE
-    - docker run -v $(pwd):/app/.artifacts $CONTAINER_TEST_IMAGE make test
+    - docker run -v $(pwd)/.artifacts:/app/.artifacts $CONTAINER_TEST_IMAGE make test
   artifacts:
     when: always
     reports:
