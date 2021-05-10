@@ -1,6 +1,4 @@
 """Functions to conduct basic data cleaning"""
-import logging
-
 COLS_TO_FILTER = [
     'SalePrice', 'Garage Area', 'Total Bsmt SF',
     'BsmtFin SF 1', 'BsmtFin SF 2', 'Misc Val',
@@ -33,10 +31,6 @@ def data_cleaning(df, lower_precision=True):
         mask = mask & ~(df[col] > threshold)
     df = df.loc[mask, :]
 
-    df.drop(['Pool QC', 'Misc Feature', 'Alley',
-             '3Ssn Porch', 'Pool Area'],
-            axis=1, inplace=True)
-
     if lower_precision:
         df = drop_precision(df)
 
@@ -48,9 +42,9 @@ def data_cleaning(df, lower_precision=True):
     df.loc[:, real_feats_df.columns] = fill_na_real(real_feats_df)
     df = df.reset_index(drop=True)
     cleaned_data_size = df.shape[0]
-    logging.debug('Initial data size: ', initial_data_size)
-    logging.debug('Dropped {} lines'.format(initial_data_size-cleaned_data_size))
-    logging.debug('Final data size: ', cleaned_data_size)
+    print('Initial data size: ', initial_data_size)
+    print('Dropped {} lines'.format(initial_data_size-cleaned_data_size))
+    print('Final data size: ', cleaned_data_size)
 
     return df
 
