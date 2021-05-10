@@ -33,6 +33,9 @@ build:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
+  except:
+    variables:
+      - $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_MESSAGE =~ /^Merge/ 
 
 retrain_model:
   stage: retrain
@@ -56,18 +59,17 @@ retrain_model:
     - git config --global user.name "vinnibuh"
     - git clone git@gitlab.com:${CI_PROJECT_PATH}.git
     - cd ${CI_PROJECT_NAME}
-    - git checkout develop
+    - git checkout master
     - mkdir .artifacts || true
     - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
   script:
     - make predict
     - git add .
     - git commit -m 'retrained model'
-    - git push --force origin develop
+    - git push --force origin master
   only:
     variables:
-      - $CI_COMMIT_BRANCH == "develop"
-      - $CI_COMMIT_MESSAGE =~ /^Merge/ 
+      - $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_MESSAGE =~ /^Merge/ 
 
 test_a:
   stage: test
@@ -92,6 +94,9 @@ test_b:
     reports:
       junit: report.xml
       cobertura: coverage.xml
+  except:
+    variables:
+      - $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_MESSAGE =~ /^Merge/ 
 
 pages:
   stage: deploy
@@ -103,8 +108,12 @@ pages:
     paths:
       - public
   only:
-    - master
-
+    variables:
+      - $CI_COMMIT_BRANCH == "master"
+  except:
+    variables:
+      - $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_MESSAGE =~ /^Merge/ 
+ 
 release-image:
   stage: release
   tags:
@@ -114,4 +123,10 @@ release-image:
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker push $CONTAINER_RELEASE_IMAGE
   only:
-    - master
+    variables:
+      - $CI_COMMIT_BRANCH == "master"
+  except:
+    variables:
+      - $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_MESSAGE =~ /^Merge/ 
+
+
