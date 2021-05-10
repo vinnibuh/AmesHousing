@@ -5,7 +5,6 @@ docs/build
 .venv
 .coverage
 .hypothesis
-.artifacts
 .mutmut-cache
 build/
 dist/
