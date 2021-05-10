@@ -46,14 +46,21 @@ retrain_model:
     - python3 setup.py install
     - mkdir .artifacts || true
     - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
+    - 'which ssh-agent || ( apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(base64 -d -i $GIT_SSH_PRIV_KEY)
+    - git config --global user.email "ivchyaroslav@gmail.com"
+    - git config --global user.name "vinnibuh"
+    - mkdir -p ~/.ssh
+    - cat gitlab-known-hosts >> ~/.ssh/known_hosts
   script:
+    - git checkout develop
     - make predict
+    - git push --force origin develop
   only:
     refs:
-      - feature/makefile
+      - develop
       - merge_request
-  except:
-    - master
 
 test_a:
   stage: test
