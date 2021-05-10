@@ -60,9 +60,9 @@ retrain_model:
     - git commit -m 'retrained model'
     - git push --force origin develop
   only:
-    refs:
-      - develop
-      - merge_request
+    variables:
+      - $CI_COMMIT_BRANCH == "develop"
+      - $CI_COMMIT_MESSAGE =~ /^Merge/ 
 
 test_a:
   stage: test
