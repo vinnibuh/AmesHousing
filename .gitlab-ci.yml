@@ -92,8 +92,8 @@ test_b:
   artifacts:
     when: always
     reports:
-      junit: report.xml
-      cobertura: coverage.xml
+      junit: .artifacts/report.xml
+      cobertura: .artifacts/coverage.xml
   except:
     variables:
       - $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_MESSAGE =~ /^Merge/ 
