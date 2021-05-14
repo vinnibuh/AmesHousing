@@ -27,7 +27,6 @@ pytest = "*"
 coverage = "*"
 pytest-cov = "*"
 hypothesis = "*"
-ameshousing = {editable = true, path = "."}
 
 [requires]
 python_version = "3.8"

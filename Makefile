@@ -20,6 +20,7 @@ requirements-test:
 	pipenv install
 	pipenv install --dev
 	pipenv shell || true
+	$(PYTHON_INTERPRETER) setup.py install
 	$(PYTHON_INTERPRETER) -m pip install -U pip 
 
 
