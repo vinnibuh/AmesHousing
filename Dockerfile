@@ -1,9 +1,15 @@
-FROM python:3.9.3-slim-buster
+FROM python:3.8.10-slim-buster
 MAINTAINER Ivchenkov Yaroslav "ivchenkov.yap@phystech.edu"
+
 WORKDIR /app
-COPY requirements-test.txt requirements-test.txt
+
 RUN apt-get update
 RUN apt-get -y install make
-RUN pip3 install -r requirements-test.txt
+
+RUN pip3 install pipenv
+COPY Pipfile ./
+COPY Pipfile.lock ./
+RUN set -ex && pipenv install --dev --deploy --system
+
 COPY . .
-RUN python3 setup.py install
+RUN python3 setup.py install 
