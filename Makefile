@@ -1,26 +1,31 @@
-.PHONY: clean requirements data train predict test sync-data-to-gdrive sync-data-from-gdrive
+.PHONY: clean requirements requirements-test data train predict test sync-data-to-gdrive sync-data-from-gdrive
 
 PYTHON_INTERPRETER = python3
 BUCKET=1OSz5yQSK49qBmYO-CntIM_iKM8lW9MgW
 
 include .env
 
-## Setup environment for python (all processes run in venv)
-create_environment:
+## Setup environment and install requirements for python (using pipenv)
+requirements:
 	@echo $(PYTHON_INTERPRETER)
-	$(PYTHON_INTERPRETER) -m venv .venv
-	. .venv/bin/activate
-	$(PYTHON_INTERPRETER) setup.py install
+	$(PYTHON_INTERPRETER) -c "import pipenv" || $(PYTHON_INTERPRETER) -m pip install pipenv
+	pipenv install
+	pipenv shell || true
 	$(PYTHON_INTERPRETER) -m pip install -U pip 
+
+## Install dependencies for tests (using pipenv)
+requirements-test:
+	@echo $(PYTHON_INTERPRETER)
+	$(PYTHON_INTERPRETER) -m pip install pipenv
+	pipenv install --dev
+	pipenv shell || true
+	$(PYTHON_INTERPRETER) -m pip install -U pip 
+
 
 ## Remove all cached and compile Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-
-## Install project requirements
-requirements: create_environment
-	$(PYTHON_INTERPRETER) -m pip install -r requirements-test.txt
 
 ## Create train and test samples, and store them in GDrive with DVC
 data: requirements sync-data-from-gdrive
@@ -67,7 +72,7 @@ predict: train
 	dvc push -r mipt_drive
 
 ## Run tests (with creation of different reports)
-test: data
+test: requirements-test data
 	pytest --cov=housinglib \
 		--cov-branch \
 		--cov-report term-missing \
@@ -78,13 +83,13 @@ test: data
 .DEFAULT: help
 ## Show help board
 help:
-	@echo "usage: make {add-remote,clean,requirements,data,train,predict,test,sync-data-to-gdrive,sync-data-from-gdrive}"
-	@echo "make add-remote"
-	@echo "			add GDrive as DVC remote"
+	@echo "usage: make {clean,requirements,requirements-test,data,train,predict,test,sync-data-to-gdrive,sync-data-from-gdrive}"
 	@echo "make clean"
 	@echo "			clean Python cache"
 	@echo "make requirements"
-	@echo "			install Python dependencies"
+	@echo "			install project dependencies"
+	@echo "make requirements-test"
+	@echo "			install dependencies for tests"	
 	@echo "make data"
 	@echo "			split and preprocess data"
 	@echo "make train"

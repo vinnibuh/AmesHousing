@@ -16,7 +16,8 @@ install_requires = []
 with open(f"./requirements.txt", 'r') as f:
     for line in f.readlines():
         line = line.split('#')[0].strip()
-        if len(line) > 0:
+        line = line.split(';')[0].strip()
+        if len(line) > 0 and line[0] != '-':
             install_requires.append(line)
 
 tests_require = [
