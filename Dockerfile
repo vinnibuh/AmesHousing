@@ -1,4 +1,4 @@
-FROM python:3.9.3-slim-buster
+FROM python:3.8.10-slim-buster
 MAINTAINER Ivchenkov Yaroslav "ivchenkov.yap@phystech.edu"
 
 WORKDIR /app
