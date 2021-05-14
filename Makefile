@@ -16,7 +16,8 @@ requirements:
 ## Install dependencies for tests (using pipenv)
 requirements-test:
 	@echo $(PYTHON_INTERPRETER)
-	$(PYTHON_INTERPRETER) -m pip install pipenv
+	$(PYTHON_INTERPRETER) -c "import pipenv" || $(PYTHON_INTERPRETER) -m pip install pipenv
+	pipenv install
 	pipenv install --dev
 	pipenv shell || true
 	$(PYTHON_INTERPRETER) -m pip install -U pip 
@@ -28,7 +29,7 @@ clean:
 	find . -type d -name "__pycache__" -delete
 
 ## Create train and test samples, and store them in GDrive with DVC
-data: requirements sync-data-from-gdrive
+data: sync-data-from-gdrive
 	$(PYTHON_INTERPRETER) ./scripts/split.py \
 		--run-name ${RUN_NAME} \
 		--data-path ${RAW_DATA} \
@@ -72,7 +73,7 @@ predict: train
 	dvc push -r mipt_drive
 
 ## Run tests (with creation of different reports)
-test: requirements-test data
+test: data
 	pytest --cov=housinglib \
 		--cov-branch \
 		--cov-report term-missing \

@@ -39,7 +39,7 @@ build:
 
 retrain_model:
   stage: retrain
-  image: python:3.9.3-slim-buster
+  image: python:3.8.10-slim-buster
   tags:
     - local
   before_script:
@@ -60,6 +60,8 @@ retrain_model:
     - git checkout master
     - mkdir .artifacts || true
     - base64 -d -i $GDRIVE_SERVICE_ACCOUNT_JSON > .artifacts/gdrive_service_key.json
+    - pip3 install pipenv
+    - set -ex && pipenv install --system --deploy
   script:
     - make predict
     - git add .
