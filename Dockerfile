@@ -10,6 +10,6 @@ RUN pip3 install pipenv
 COPY Pipfile ./
 COPY Pipfile.lock ./
 RUN set -ex && pipenv install --dev --deploy --system
-RUN python install setup.py
+RUN python setup.py install 
 
 COPY . .
