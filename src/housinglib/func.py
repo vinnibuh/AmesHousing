@@ -62,3 +62,8 @@ def test(X, y, model):
             'y_predict': y_predict,
             'y_true': y,
             'X': X}
+
+
+def predict(X, model):
+    y_predict = model.predict(X)
+    return y_predict
